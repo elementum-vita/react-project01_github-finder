@@ -1,0 +1,171 @@
+PROJECT 1 : GitHub finder (third party API)
+About the learning proccess
+Start with the orignal way to do thig in react then with the newest way
+
+Old school way, important to learn ::
+    class bases components and stateless functional components 
+
+Newer way of doing things ::
+Next we'll refactor into 
+    all functional components 
+    using hooks : 'use state', 'use effect'
+Then we'll implement app levels state using 
+    context API 
+    use reducer hook
+    use context hook
+---------------------------
+To create a 'starter app' or 'boiler plate' we use :: 
+create react app 
+    you can either use npm (to install it) or nps (to use it w/o installing it)
+
+-------------
+dependencies: 
+    react :: the library
+    react-native :: mobile app /* not use here */
+    react-dom :: allows us to render our app in the browser (document object model)
+    react-scripts :: the magic behind react-app
+
+scripts: 
+npm start
+    Starts the development server.
+
+  npm run build
+    Bundles the app into static files for production.
+
+  npm test
+    Starts the test runner.
+
+  npm run eject
+    Removes this tool and copies build dependencies, configuration files
+    and scripts into the app directory. If you do this, you can’t go back!
+
+-------
+How React works :: 
+react is know as 'SPA' framework (single page application)
+so everything is routed throught a SINGLE FILE : index.html
+
+Root : 
+<body><div id="root"></div>...</body>
+this is where our entire react application is going to output
+It will output the main app component code (called app component or root component)
+Any component that we create ex. navbar, gets embedded in the main app component.
+    those component ex. navbar... are in the 'src'
+
+In index.js 
+
+ReactDOM.render(
+  <React.StrictMode>
+    <App />   // what you want to render 
+  </React.StrictMode>,
+  document.getElementById('root')   // where you want to render it (here with JS.vanilla)
+);
+if you want to change root for app, you can but you need to change it both in index.html and index.js
+
+When we deploy : we don't deplo the 'src' folder
+we deploy the statics assets that are created when we run 'build' (npm run build), 
+  which create a production (folder) call 'build', where there is a 'index.html' that'll be deploy
+
+--------
+let's run the dev server => npm start 
+running on :: localhost:3001 
+  Edit src/App.js and save to reload
+---
+App.js (import logo, app.css)
+
+function App {...}
+
+components can be ::
+  functions 
+  classes
+
+a class component can have state (functional component coudn't, but hooks now allows 
+  us to have stat within functional components)
+
+-----------
+Basic clean 
+There are four files in the 'src' folder that we can get rid of. 
+  serviceWorker.js (if we don't use PWA, cached...) /* NOT in this version of REACT */
+  logo svg
+  index.css
+  app.test.js
+
+---
+Use 'create/change' the function App to Class App ::
+we can't retrun directly from a 'class' so we need a method (function within a class (called render))
+'render' is a 'lifecycle' method :: it runs when the componenets are loaded
+there are a fes lifecycle method, but render is require because it renders the output (return)
+
+next, we have to extend the core react component (react component class) 
+which includes all the lifecycle methods
+---------
+App.js line 8 to 10 ==> JSX 
+  <div className="App">
+    <h1>Hello from React</h1>
+  </div>
+
+JSX, looks almost identical to HTML...
+
+INTRO TO JSX  :: javascript syntax extension 
+
+"syntactic suger to be able to write the output of our component in a XML or HTML like way"
+underneth it all it is javascript. 
+
+You don't need to use JSX (for the output), but it's a time and code saver ! 
+
+some exemples of attributes ::
+instead of 'class' from html, you use :: 'className'
+instead of 'for' in :: <label for='name'>Name</label>, you use :: 'htmlFor'
+
+The JSX, has to have (only) 1 PARENT (<div>) element 
+
+possible instead of <div> element to use fragments
+---------
+App.js line 8 to 10 ==> JSX 
+  <React.Fragment> 
+    <h1>Hello from React</h1>
+    <h2>Goodbye</h2>
+  </React.Fragment>
+
+also possible : if add {Fragment} in the import :: 
+<Fragment>
+  <h1>Hello from React</h1>
+  <h2>Goodbye</h2> 
+</Fragment>  
+  OR
+<>   
+  <h1>Hello from React</h1>
+  <h2>Goodbye</h2> 
+</>
+------------------______________------------------
+WITH ONLY javascript
+  render(){
+    return React.createElement(
+      'div', 
+      { className: 'App'}, 
+      React.createElement('h1', null, 'Hello from React')
+    );
+  }
+
+-------------------------------
+Expressions & Conditionals in JSX
+
+
+
+
+----
+/*/*/* UI ??? /*/*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
