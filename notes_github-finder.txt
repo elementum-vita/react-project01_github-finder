@@ -156,16 +156,255 @@ Expressions & Conditionals in JSX
 /*/*/* UI ??? /*/*/
 
 
+FONT AWESOME :: 
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+
+PROPS : 
+propreties that you can pass into a component from outside
+
+IN App.js :: 
+pass in props title => <Navbar title="Github Finder" />
+but in won't be in effect yet, 'cause we haven't use the prop yet ::
+ we need to go where we want to put it (here : Navbar.js / ... <i className='fab fa-github' />)
+ and put : {this.props.title}
+
+To create a 'DEFAULTS PROPS'
+in App.js :: <div className='App'>
+              <Navbar />
+
+in Navbar.js :: before the 'render...'
+import React, { Component } from 'react'
+
+export class Navbar extends Component {
+      static defaultProps = {
+        title: 'Github Finder',
+        icon: 'fab fa-github'
+    };
+
+    render() {
+
+****BUT, if we put something in App.js, that's going to override the default :
+ex. App.js
+<div className='App'>
+  <Navbar title='Hello' />
+
+Hello will override the defaultProps of 'GitHub Finder'
+
+_*_* By using the defaultProps, we allow the DEVs to possibilities to pass in their own afterwards.
+
+PROPS TYPES :: 
+shortcut : impr (enter) => import PropTypes from 'prop-types';
+before :: render()
+
+    static propTypes = {
+        title: PropTypes.string.isRequired,
+        icon: PropTypes.string.isRequired
+    };
+
+It will still compile even if it's the wrong propTypes, but you'll have a warning :: 
+ex. 
+class App extends Component {
+    render() { 
+      const numbers = [1,2,3,4];
+
+    return (
+      <div className='App'>
+      <Navbar title={numbers} />
+      </div>
+
+*Warning: Failed prop type: Invalid prop `title` of type `array` supplied to `Navbar`, expected `string`.
+
+________________________________________
+Component State :: 
+component level state : : it means that your state is contained within a single component
+  which will later be : app level state, pass as props 
+
+components/users/Useritems.js :: (rce)
+  import React, { Component } from 'react'
+
+  class Useritems extends Component {
+      render() {
+          return (
+              <div>
+                  
+              </div>
+          )
+      }
+  }
+
+  export default Useritems
+
+-----
+when you want to grab something from 'state' within a 'class' you use :: {this.state.X}
+<img src={this.state.avatar_url}
 
 
+CONSTRUCTOR : not necessary : 
+this :: 
+class Useritems extends Component {
+    constructor() {
+        super();
+        this.state = {
+            id : 'id',
+            login: 'mojombo',
+            avatar_url: 'https://avatars.githubusercontent.com/u/1?v=4',
+            html_url: 'https://github.com/mojombo' 
+        }
+    }
+
+CAN BE  ::
+class Useritems extends Component {
+    state = {
+        id : 'id',
+        login: 'mojombo',
+        avatar_url: 'https://avatars.githubusercontent.com/u/1?v=4',
+        html_url: 'https://github.com/mojombo' 
+    };
+  
+many this.state :: destructuring so ::
+return <div className='card text-center'>
+  <img 
+      src={this.state.avatar_url} 
+      alt='' 
+      className='round-img' 
+      style={{width: '60px' }} 
+  />
+  <h3>{this.state.login}</h3>   
+
+  <div>
+      <a href={this.state.html_url} className='btn btn-dark btn-sm my-1'>More</a>
+  </div>     
+</div>
+
+BECOMES  :: 
+return <div className='card text-center'>
+  <img 
+      src={avatar_url} 
+      alt='' 
+      className='round-img' 
+      style={{width: '60px' }} 
+  />
+  <h3>{login}</h3>   
+
+  <div>
+      <a href={html_url} className='btn btn-dark btn-sm my-1'>More</a>
+  </div>     
+</div>
 
 
+==-==---==---==-==--==---==
+Users component, which wrap Useritem component
+the state within the users component will loop through all the users (array of users) 
+then we'll output a Useritem for each one 
+we get th data into the Useritem through PROPS 
+________________________________________
 
+Warning: Each child in a list should have a unique "key" prop.
+render() {
+    return (
+        <div>
+            {this.state.users.map(user => (
+                <div key={user.id}>{user.login}</div>
+            ))}
+        </div>
+    )
+}
 
+-----
+render() {
+    return (
+        <div>
+            {this.state.users.map(user => (
+                <UserItem key={user.id} user={user} />
+            ))}
+        </div>...
 
+We are looping through the users in the state for each one, and we're passing it as a props to UserItem
 
+________________________________________
+you can set a a variable to a styled object ex. Grid system :: on users 
 
+------______________------______________-----
+Converting class based components to functional components ::
+because they don't have state, so they don't need to be classes 
 
+Useritem.js :: 
+...TypeError: Cannot read property 'props' of undefined
+UserItem
+C:/Users/Roxou/Documents/DEV/react-app/react-project02_github-finder/src/components/users/Useritem.js:4
+  1 | import React, { Component } from 'react'
+  2 | 
+  3 | const UserItem = () => { 
+> 4 |     const { login, avatar_url, html_url } = this.props.user;
+  5 | 
+  6 |     return <div className='card text-center'>
 
+  ====>>>> now needs to be ::
+  const UserItem = (props) => { 
+    const { login, avatar_url, html_url } = props.user;
+OR ....
+const UserItem = ({ user: { login, avatar_url, html_url }}) => {...
+
+Changes to Navbar.js from :
+  import React, { Component } from 'react'
+  import PropTypes from 'prop-types';
+
+  class Navbar extends Component {
+      static defaultProps = {
+          title: 'Github Finder',
+          icon: 'fab fa-github'
+      };
+
+      static propTypes = {
+          title: PropTypes.string.isRequired,
+          icon: PropTypes.string.isRequired
+      };
+
+      render() {
+          return (
+              <nav className='navbar bg-primary'>
+                  <h1>
+                      <i className={this.props.icon} /> {this.props.title}
+                  </h1>
+              </nav>
+          )
+      }
+  }
+
+  export default Navbar
+TO : 
+  import React from 'react'
+  import PropTypes from 'prop-types';
+
+  const Navbar = ({ icon, title}) => {
+      return (
+          <nav className='navbar bg-primary'>
+              <h1>
+                  <i className={icon} /> {title}
+              </h1>
+          </nav>
+      )
+}
+
+  Navbar.defaultProps = {
+      title: 'Github Finder',
+      icon: 'fab fa-github'
+  };
+
+  Navbar.propTypes = {
+      title: PropTypes.string.isRequired,
+      icon: PropTypes.string.isRequired
+  };
+
+  export default Navbar
+
+////*****//////
+snippets proptypes : 
+ptor => 
+UserItem.propTypes = {
+    user: PropTypes.object.isRequired,
+}
+__________________-------______________________-------______________
+HTTP Request and Updating State ::
 
 
