@@ -406,5 +406,212 @@ UserItem.propTypes = {
 }
 __________________-------______________________-------______________
 HTTP Request and Updating State ::
+Axios or Fetch API 
+to make a http request (such as github) right when the app loads
+stop the server ^C, then 
+npm i axios
+npm start 
+
+__________________------__________________------______________________
+Spinner Component & Refactoring 
+Spinner.js => arrow function component
+shortcut :: rafce (React Arrow Function Export Component)
+
+webpack allow us to import images :: import {spinner} form './spinner.gif'
+
+with arrow function, if there is no other JS code except for the return, we can simply have a <Fragment> ::
+import React, { Fragment } from 'react'
+import spinner from './spinner.gif';
+
+const Spinner = () => <Fragment>
+        <img src={spinner} alt='Loading...' style={{ width : '200px', margin: 'auto', display: 'block' }} />
+    </Fragment>
+export default Spinner
+__________________-------______________________-------______________
+Get API client ID in secret for GitHub & Environment variables : 
+to store variables that you  can use anywhere
+
+in the roots of the project : create the file : .env.local 
+MUST BE in .gitignore
+must start with : REACT_APP_    EX. ::
+REACT_APP_GITHUB_CLIENT_ID=''
+REACT_APP_GITHUB_CLIENT_SECRET='' 
+
+Then restart the server
+Then where the API is (App.js)
+...
+const res = await axios.get('https://api.github.com/users
+add/change to ::
+const res = await axios.get(`https://api.github.com/users?client_id=$
+    {process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=$
+    {process.env.REACT_APP_GITHUB_CLIENT_SECRET}`);
+
+to verify that it's working : copy in a console.log in componentDiMount();
+async componentDidMount() {
+   this.setState({ loading: true });
+
+   const res = await axios.get(
+     `https://api.github.com/users?client_id=$
+     {process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=$
+     {process.env.REACT_APP_GITHUB_CLIENT_SECRET}`
+   );
+    
+   this.setState({ users: res.data, loading: false });
+}
+__________________-------______________________-------______________
+Events and Search
+Search From based on username : 
+FORM INPUT needs to be component level state
+
+controlled component : 
+lass Search extends Component {
+    state = {
+        text: ''
+    };
+
+    render() {
+        return (
+            <div>
+                <form className='form'>
+                    <input 
+                        type='text' 
+                        name='text' 
+                        placeholder='Search Users...' 
+                        value={this.state.text} />
+
+Warning: You provided a `value` prop to a form field without an `onChange` handler. 
+This will render a read-only field. 
+If the field should be mutable use `defaultValue`. Otherwise, set either `onChange` or `readOnly`.
+
+we need to add :: onChange
+class Search extends Component {
+    state = {
+        text: ''
+    };
+
+    onChange = (e) => {
+        this.setState({ text: e.target.value });
+    }
+
+    render() {
+        return (
+            <div>
+                <form className='form'>
+                    <input 
+                        type='text' 
+                        name='text' 
+                        placeholder='Search Users...' 
+                        value={this.state.text} 
+                        onChange={this.onChange}
+                    />
+
+If we have mutiple fields : name, phone, email...
+we don't want to have different onChange for each one :: 
+so we use the 'name' with brackets :
+onChange = (e) => {
+        this.setState({ [e.target.name]: e.target.value }); };
+
+__________________-------______________________-------______________
+we want to take the text that is submitted
+and call a method that's going to reach out to the API, to GitHub 
+and actually search for a User (based on what we enter in the search bar)
+
+https://docs.github.com/en/rest/reference/search#search-users
+
+we have to pass ::
+    onSubmit = (e) => {
+        e.preventDefault();
+        console.log(this.state.text);
+    }
+
+onto the App.js :
+  searchUsers = (text) => {
+      console.log(text);
+    }
+
+    render() { 
+      return (
+        <div className='App'>
+          <Navbar />
+          <div className='container'>
+            <Search searchUsers={this.searchUsers} /> ...
+
+SO :: 
+once we submit the form (onSubmit in the search component)
+we are calling a props (fonction call searchUsers) and passing it the text
+in app.js, we set the prop : <Search searchUsers={this.searchUsers} />
+
+__________________-------______________________-------______________
+Clear the users in the state search 
+  see button and props
+Alert state and component ::
+set a certain amount of time for the alert before making it disapear
+
+__________________-------______________________-------______________
+React Router
+npm i react-router-dom 
+in app.js :: import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+
+*How to put multiple components in a single root :: wrap the inside of the return in <Router>
+<Router>
+  <div className='App'>
+    <Navbar />
+    <div className='container'>
+      <Alert alert={this.state.alert} />
+      <Switch>
+        <Route 
+          exact 
+          path='/' 
+          render={props => (
+          <Fragment>
+            <Search 
+              searchUsers={this.searchUsers} 
+              clearUsers={this.clearUsers} 
+              showClear={ users.length > 0 ? true : false } 
+              setAlert={this.setAlert}
+            />
+            <Users loading={loading} users={users} />
+          </Fragment>
+        )} />
+      </Switch>
+    </div>
+  </div>
+</Router>
+-------
+* Create an 'about' component, to create a route w/o having to use the render={props...
+
+--
+NO to the <a> tag ::
+  <ul>
+      <li>
+          <a href='/'>Home</a>
+      </li>
+      <li>
+          <a href='/about'>About</a>
+      </li>
+  </ul
+INSTEAD :: we want to use LINK from 'react router dom' to the Navbar component ::
+  <ul>
+      <li>
+          <Link to='/'>Home</Link>
+      </li>
+      <li>
+          <Link to='/about'>About</Link>
+      </li>
+  </ul>
+Allow us : if we start a search in home, then go to about and back to home, 
+we'll be back with the results of our search (with a href, we would have wipe the state clean)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
